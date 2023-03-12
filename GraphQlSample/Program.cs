@@ -1,5 +1,8 @@
+using GraphQL.Client.Abstractions;
+using GraphQL.Client.Http;
 using GraphQL.Server;
 using GraphQL.Server.Ui.Playground;
+using GraphQlSample;
 using GraphQlSample.Context;
 using GraphQlSample.Contract;
 using GraphQlSample.GraphQls.GraphQlSchema;
@@ -26,7 +29,8 @@ builder.Services.AddGraphQL(options => { options.EnableMetrics = true; })
         .AddDataLoader()
         .AddSystemTextJson(d => { }, s => { });
 
-
+builder.Services.AddScoped<IGraphQLClient>(s => new GraphQLHttpClient("https://localhost:7051/graphql", new GraphQL.Client.Serializer.SystemTextJson.SystemTextJsonSerializer()));
+builder.Services.AddScoped<OwnerConsumer>();
 
 var app = builder.Build();
 

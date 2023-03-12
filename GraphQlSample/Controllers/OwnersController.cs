@@ -7,9 +7,16 @@ namespace GraphQlSample.Controllers
     [ApiController]
     public class OwnersController : ControllerBase
     {
-        public OwnersController()
+        private readonly OwnerConsumer _consumer;
+        public OwnersController(OwnerConsumer consumer)
         {
-
+            _consumer = consumer;
+        }
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var owners = await _consumer.GetAllOwners();
+            return Ok(owners);
         }
     }
 }
