@@ -2,6 +2,7 @@
 using GraphQL.Client.Abstractions;
 using GraphQlSample.Entities;
 using GraphQlSample.GraphQls.GraphQLTypes;
+using GraphQlSample.Model;
 
 namespace GraphQlSample
 {
@@ -13,28 +14,34 @@ namespace GraphQlSample
             _client = client;
         }
 
-        public async Task<List<Owner>> GetAllOwners()
+        public async Task<ResponseOwnerCollectionType> GetAllOwners(GraphQLQuery graphQLQuery)
         {
             var query = new GraphQLRequest
             {
-                Query = @"
-                query ownersQuery{
-                  owners {
-                    id
-                    name
-                    address
-                    accounts {
-                      id
-                      type
-                      description
-                    }
-                  }
-                }"
+                Query = graphQLQuery.Query,
+                Variables = graphQLQuery.Variables,
             };
 
             var response = await _client.SendQueryAsync<ResponseOwnerCollectionType>(query);
-            return response.Data.Owners;
+            return response.Data;
         }
+
+        //public async Task<List<Owner>> GetAllOwners()
+        //{
+        //    var query = new GraphQLRequest
+        //    {
+        //        Query = @"
+        //        query ownersQuery{
+        //          owners {
+        //            id
+        //            name
+        //          }
+        //        }"
+        //    };
+
+        //    var response = await _client.SendQueryAsync<ResponseOwnerCollectionType>(query);
+        //    return response.Data.Owners;
+        //}
 
         public async Task<Owner> GetOwner(Guid id)
         {
@@ -53,7 +60,8 @@ namespace GraphQlSample
                     }
                   }
                 }",
-                Variables = new { ownerID = id }
+                Variables = new { ownerID = id },
+
             };
 
             var response = await _client.SendQueryAsync<ResponseOwnerType>(query);
@@ -79,39 +87,38 @@ namespace GraphQlSample
             return response.Data.Owner;
         }
 
-        //public async Task<Owner> UpdateOwner(Guid id, OwnerInputType ownerToUpdate)
-        //{
-        //    var query = new GraphQLRequest
-        //    {
-        //        Query = @"
-        //        mutation($owner: ownerInput!, $ownerId: ID!){
-        //          updateOwner(owner: $owner, ownerId: $ownerId){
-        //            id,
-        //            name,
-        //            address
-        //          }
-        //       }",
-        //        Variables = new { owner = ownerToUpdate, ownerId = id }
-        //    };
+        public async Task<Owner> UpdateOwner(Guid id, OwnerInputType ownerToUpdate)
+        {
+            var query = new GraphQLRequest
+            {
+                Query = @"
+                mutation($owner: ownerInput!, $ownerId: ID!){
+                  updateOwner(owner: $owner, ownerId: $ownerId){
+                    id,
+                    name,
+                    address
+                  }
+               }",
+                Variables = new { owner = ownerToUpdate, ownerId = id }
+            };
 
-        //    var response = await _client.PostAsync(query);
-        //    return response.GetDataFieldAs<Owner>("updateOwner");
-        //}
+            var response = await _client.SendMutationAsync<ResponseOwnerType>(query);
+            return response.Data.Owner;
+        }
 
-        //public async Task<string> DeleteOwner(Guid id)
-        //{
-        //    var query = new GraphQLRequest
-        //    {
-        //        Query = @"
-        //       mutation($ownerId: ID!){
-        //          deleteOwner(ownerId: $ownerId)
-        //        }",
-        //        Variables = new { ownerId = id }
-        //    };
+        public async Task<Owner> DeleteOwner(Guid id)
+        {
+            var query = new GraphQLRequest
+            {
+                Query = @"
+               mutation($ownerId: ID!){
+                  deleteOwner(ownerId: $ownerId)
+                }",
+                Variables = new { ownerId = id }
+            };
 
-        //    var response = await _client.SendMutationAsync<ResponseOwnerType>(query);
-        //    return response.Data.Owner;
-        //}
-
+            var response = await _client.SendMutationAsync<ResponseOwnerType>(query);
+            return response.Data.Owner;
+        }
     }
 }

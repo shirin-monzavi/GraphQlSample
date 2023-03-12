@@ -6,7 +6,7 @@ namespace GraphQlSample.Entities
     {
         [Key]
         public Guid Id { get; set; }
-        [Required(ErrorMessage ="Name Is Required")]
+
         public string Name { get; set; }
 
         public string Address { get; set; }

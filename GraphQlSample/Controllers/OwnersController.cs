@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GraphQlSample.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GraphQlSample.Controllers
@@ -12,11 +12,19 @@ namespace GraphQlSample.Controllers
         {
             _consumer = consumer;
         }
+
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetOwners([FromQuery] GraphQLQuery graphQLQuery)
         {
-            var owners = await _consumer.GetAllOwners();
+            var owners = await _consumer.GetAllOwners(graphQLQuery);
             return Ok(owners);
         }
+
+        //[HttpGet]
+        //public async Task<IActionResult> GetOwners()
+        //{
+        //    var owners = await _consumer.GetAllOwners();
+        //    return Ok(owners);
+        //}
     }
 }

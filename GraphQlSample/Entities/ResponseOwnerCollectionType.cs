@@ -1,4 +1,6 @@
-﻿namespace GraphQlSample.Entities
+﻿using GraphQlSample.GraphQls.GraphQLTypes;
+
+namespace GraphQlSample.Entities
 {
     public class ResponseOwnerCollectionType
     {

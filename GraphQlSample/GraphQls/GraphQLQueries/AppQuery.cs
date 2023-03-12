@@ -13,9 +13,12 @@ namespace GraphQlSample.GraphQls.GraphQLQueries
                 "owners",
                 resolve: context => repository.GetAll());
 
+            
             Field<OwnerType>(
                 "owner",
-                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "ownerId" }),
+                arguments: 
+                  new QueryArguments(
+                    new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "ownerId" }),
                 resolve: context =>
                 {
                     Guid id;

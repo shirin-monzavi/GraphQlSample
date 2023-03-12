@@ -24,7 +24,7 @@ builder.Services.AddDbContext<ApplicationContext>(opt =>
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<AppSchema>();
-builder.Services.AddGraphQL(options => { options.EnableMetrics = true; })
+builder.Services.AddGraphQL(options => { options.EnableMetrics = false; })
         .AddGraphTypes(ServiceLifetime.Scoped)
         .AddDataLoader()
         .AddSystemTextJson(d => { }, s => { });
