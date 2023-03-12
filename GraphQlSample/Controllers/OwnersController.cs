@@ -1,5 +1,9 @@
-﻿using GraphQlSample.Model;
+﻿using GraphQL;
+using GraphQL.Types;
+using GraphQlSample.GraphQls.GraphQLQueries;
+using GraphQlSample.Model;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace GraphQlSample.Controllers
 {
@@ -20,11 +24,11 @@ namespace GraphQlSample.Controllers
             return Ok(owners);
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetOwners()
-        //{
-        //    var owners = await _consumer.GetAllOwners();
-        //    return Ok(owners);
-        //}
+        [HttpGet("{ownerId}")]
+        public async Task<IActionResult> GetOwner(Guid ownerId ,[FromQuery] GraphQLQuery graphQLQuery)
+        {
+            var owners = await _consumer.GetOwner(graphQLQuery, new  { id = ownerId });
+            return Ok(owners);
+        }
     }
 }

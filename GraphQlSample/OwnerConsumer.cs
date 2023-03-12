@@ -3,6 +3,7 @@ using GraphQL.Client.Abstractions;
 using GraphQlSample.Entities;
 using GraphQlSample.GraphQls.GraphQLTypes;
 using GraphQlSample.Model;
+using Newtonsoft.Json.Linq;
 
 namespace GraphQlSample
 {
@@ -19,49 +20,18 @@ namespace GraphQlSample
             var query = new GraphQLRequest
             {
                 Query = graphQLQuery.Query,
-                Variables = graphQLQuery.Variables,
             };
 
             var response = await _client.SendQueryAsync<ResponseOwnerCollectionType>(query);
             return response.Data;
         }
 
-        //public async Task<List<Owner>> GetAllOwners()
-        //{
-        //    var query = new GraphQLRequest
-        //    {
-        //        Query = @"
-        //        query ownersQuery{
-        //          owners {
-        //            id
-        //            name
-        //          }
-        //        }"
-        //    };
-
-        //    var response = await _client.SendQueryAsync<ResponseOwnerCollectionType>(query);
-        //    return response.Data.Owners;
-        //}
-
-        public async Task<Owner> GetOwner(Guid id)
+        public async Task<Owner> GetOwner(GraphQLQuery graphQLQuery, object variable)
         {
             var query = new GraphQLRequest
             {
-                Query = @"
-                query ownerQuery($ownerID: ID!) {
-                  owner(ownerId: $ownerID) {
-                    id
-                    name
-                    address
-                    accounts {
-                      id
-                      type
-                      description
-                    }
-                  }
-                }",
-                Variables = new { ownerID = id },
-
+                Query = graphQLQuery.Query,
+                Variables = variable,
             };
 
             var response = await _client.SendQueryAsync<ResponseOwnerType>(query);
@@ -120,5 +90,22 @@ namespace GraphQlSample
             var response = await _client.SendMutationAsync<ResponseOwnerType>(query);
             return response.Data.Owner;
         }
+
+        //public async Task<List<Owner>> GetAllOwners()
+        //{
+        //    var query = new GraphQLRequest
+        //    {
+        //        Query = @"
+        //        query ownersQuery{
+        //          owners {
+        //            id
+        //            name
+        //          }
+        //        }"
+        //    };
+
+        //    var response = await _client.SendQueryAsync<ResponseOwnerCollectionType>(query);
+        //    return response.Data.Owners;
+        //}
     }
 }
