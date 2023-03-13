@@ -1,11 +1,7 @@
 ﻿using GraphQL;
 using GraphQL.Client.Abstractions;
 using GraphQlSample.Entities;
-using GraphQlSample.GraphQls.GraphQLTypes;
 using GraphQlSample.Model;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Text.Json.Nodes;
 
 namespace GraphQlSample
 {

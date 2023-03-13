@@ -1,10 +1,5 @@
-﻿using GraphQL.NewtonsoftJson;
-using GraphQlSample.Entities;
-using GraphQlSample.GraphQls.GraphQLTypes;
-using GraphQlSample.Model;
+﻿using GraphQlSample.Model;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace GraphQlSample.Controllers
 {
@@ -21,15 +16,13 @@ namespace GraphQlSample.Controllers
         [HttpGet]
         public async Task<IActionResult> GetOwners([FromQuery] GraphQLQuery graphQLQuery)
         {
-            var owners = await _consumer.GetAllOwners(graphQLQuery);
-            return Ok(owners);
+            return Ok(await _consumer.GetAllOwners(graphQLQuery));
         }
 
         [HttpGet("{ownerId}")]
         public async Task<IActionResult> GetOwner(Guid ownerId, [FromQuery] GraphQLQuery graphQLQuery)
         {
-            var owners = await _consumer.GetOwner(graphQLQuery, ownerId);
-            return Ok(owners);
+            return Ok(await _consumer.GetOwner(graphQLQuery, ownerId));
         }
 
         [HttpPost]
