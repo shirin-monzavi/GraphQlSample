@@ -1,8 +1,9 @@
-﻿using GraphQL;
-using GraphQL.Types;
-using GraphQlSample.GraphQls.GraphQLQueries;
+﻿using GraphQL.NewtonsoftJson;
+using GraphQlSample.Entities;
+using GraphQlSample.GraphQls.GraphQLTypes;
 using GraphQlSample.Model;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace GraphQlSample.Controllers
@@ -25,10 +26,28 @@ namespace GraphQlSample.Controllers
         }
 
         [HttpGet("{ownerId}")]
-        public async Task<IActionResult> GetOwner(Guid ownerId ,[FromQuery] GraphQLQuery graphQLQuery)
+        public async Task<IActionResult> GetOwner(Guid ownerId, [FromQuery] GraphQLQuery graphQLQuery)
         {
-            var owners = await _consumer.GetOwner(graphQLQuery, new  { id = ownerId });
+            var owners = await _consumer.GetOwner(graphQLQuery, ownerId);
             return Ok(owners);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetOwner([FromBody] GraphQLQuery? graphQLQuery)
+        {
+            return Ok(await _consumer.CreateOwner(graphQLQuery));
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateOwner(Guid id, [FromBody] GraphQLQuery? graphQLQuery)
+        {
+            return Ok(await _consumer.UpdateOwner(id, graphQLQuery));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOwner(Guid id)
+        {
+            return Ok(await _consumer.DeleteOwner(id));
         }
     }
 }

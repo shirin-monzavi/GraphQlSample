@@ -3,7 +3,9 @@ using GraphQL.Client.Abstractions;
 using GraphQlSample.Entities;
 using GraphQlSample.GraphQls.GraphQLTypes;
 using GraphQlSample.Model;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 
 namespace GraphQlSample
 {
@@ -17,6 +19,8 @@ namespace GraphQlSample
 
         public async Task<ResponseOwnerCollectionType> GetAllOwners(GraphQLQuery graphQLQuery)
         {
+            //query ownersQuery{ owners { id name  }  }
+
             var query = new GraphQLRequest
             {
                 Query = graphQLQuery.Query,
@@ -26,38 +30,34 @@ namespace GraphQlSample
             return response.Data;
         }
 
-        public async Task<Owner> GetOwner(GraphQLQuery graphQLQuery, object variable)
+        public async Task<Owner> GetOwner(GraphQLQuery graphQLQuery, Guid id)
         {
+            //query getOwner($ownerId:ID!){owner(ownerId:$ownerId){  id,address }}
+
             var query = new GraphQLRequest
             {
-                Query = graphQLQuery.Query,
-                Variables = variable,
+                Query = "query getOwner($ownerId:ID!){ owner(ownerId:$ownerId){ id, address }}",
+                Variables = new { ownerId = id },
             };
 
             var response = await _client.SendQueryAsync<ResponseOwnerType>(query);
             return response.Data.Owner;
         }
 
-        public async Task<Owner> CreateOwner(OwnerInputType ownerToCreate)
+        public async Task<Owner> CreateOwner(GraphQLQuery graphQLQuery)
         {
+            //mutation($owner:ownerInput!){createOwner(owner:$owner){ name, address}}
             var query = new GraphQLRequest
             {
-                Query = @"
-                mutation($owner: ownerInput!){
-                  createOwner(owner: $owner){
-                    id,
-                    name,
-                    address
-                  }
-                }",
-                Variables = new { owner = ownerToCreate }
+                Query = graphQLQuery.Query,
+                Variables = new { owner = graphQLQuery.Variables }
             };
 
             var response = await _client.SendMutationAsync<ResponseOwnerType>(query);
             return response.Data.Owner;
         }
 
-        public async Task<Owner> UpdateOwner(Guid id, OwnerInputType ownerToUpdate)
+        public async Task<Owner> UpdateOwner(Guid id, GraphQLQuery graphQLQuery)
         {
             var query = new GraphQLRequest
             {
@@ -69,7 +69,7 @@ namespace GraphQlSample
                     address
                   }
                }",
-                Variables = new { owner = ownerToUpdate, ownerId = id }
+                Variables = new { owner = graphQLQuery.Variables, ownerId = id }
             };
 
             var response = await _client.SendMutationAsync<ResponseOwnerType>(query);
@@ -81,31 +81,18 @@ namespace GraphQlSample
             var query = new GraphQLRequest
             {
                 Query = @"
-               mutation($ownerId: ID!){
-                  deleteOwner(ownerId: $ownerId)
-                }",
+                        mutation($ownerId:ID!){
+                        deleteOwner(ownerId: $ownerId){
+                        id,
+                        name,
+                        address
+                        }
+                        }",
                 Variables = new { ownerId = id }
             };
 
             var response = await _client.SendMutationAsync<ResponseOwnerType>(query);
             return response.Data.Owner;
         }
-
-        //public async Task<List<Owner>> GetAllOwners()
-        //{
-        //    var query = new GraphQLRequest
-        //    {
-        //        Query = @"
-        //        query ownersQuery{
-        //          owners {
-        //            id
-        //            name
-        //          }
-        //        }"
-        //    };
-
-        //    var response = await _client.SendQueryAsync<ResponseOwnerCollectionType>(query);
-        //    return response.Data.Owners;
-        //}
     }
 }

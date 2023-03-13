@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 
 namespace GraphQlSample.Model
 {
@@ -7,6 +7,7 @@ namespace GraphQlSample.Model
         public string? OperationName { get; set; }
         public string? NamedQuery { get; set; }
         public string? Query { get; set; }
+        public JsonObject? Variables { get; set; }
     }
 
 }
