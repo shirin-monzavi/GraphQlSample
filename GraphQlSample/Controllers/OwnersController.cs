@@ -26,21 +26,21 @@ namespace GraphQlSample.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetOwner([FromBody] GraphQLQuery? graphQLQuery)
+        public async Task<IActionResult> CreateOwner([FromBody] GraphQLQuery? graphQLQuery)
         {
-            return Ok(await _consumer.CreateOwner(graphQLQuery));
+            return Ok(await _consumer.CreateOwner<object>(graphQLQuery));
         }
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateOwner(Guid id, [FromBody] GraphQLQuery? graphQLQuery)
         {
-            return Ok(await _consumer.UpdateOwner(id, graphQLQuery));
+            return Ok(await _consumer.UpdateOwner<object>(id, graphQLQuery));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOwner(Guid id)
         {
-            return Ok(await _consumer.DeleteOwner(id));
+            return Ok(await _consumer.DeleteOwner<object>(id));
         }
     }
 }

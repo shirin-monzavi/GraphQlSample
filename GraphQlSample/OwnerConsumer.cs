@@ -2,6 +2,8 @@
 using GraphQL.Client.Abstractions;
 using GraphQlSample.Entities;
 using GraphQlSample.Model;
+using Newtonsoft.Json;
+using System.Text.Json.Nodes;
 
 namespace GraphQlSample
 {
@@ -40,8 +42,9 @@ namespace GraphQlSample
             return response.Data.Owner;
         }
 
-        public async Task<Owner> CreateOwner(GraphQLQuery graphQLQuery)
+        public async Task<T> CreateOwner<T>(GraphQLQuery graphQLQuery)
         {
+
             //mutation($owner:ownerInput!){createOwner(owner:$owner){ name, address}}
             var query = new GraphQLRequest
             {
@@ -49,11 +52,11 @@ namespace GraphQlSample
                 Variables = new { owner = graphQLQuery.Variables }
             };
 
-            var response = await _client.SendMutationAsync<ResponseOwnerType>(query);
-            return response.Data.Owner;
+            var response = await _client.SendMutationAsync<T>(query);
+            return response.Data;
         }
 
-        public async Task<Owner> UpdateOwner(Guid id, GraphQLQuery graphQLQuery)
+        public async Task<T> UpdateOwner<T>(Guid id, GraphQLQuery graphQLQuery)
         {
             var query = new GraphQLRequest
             {
@@ -68,11 +71,11 @@ namespace GraphQlSample
                 Variables = new { owner = graphQLQuery.Variables, ownerId = id }
             };
 
-            var response = await _client.SendMutationAsync<ResponseOwnerType>(query);
-            return response.Data.Owner;
+            var response = await _client.SendMutationAsync<T>(query);
+            return response.Data;
         }
 
-        public async Task<Owner> DeleteOwner(Guid id)
+        public async Task<T> DeleteOwner<T>(Guid id)
         {
             var query = new GraphQLRequest
             {
@@ -87,8 +90,8 @@ namespace GraphQlSample
                 Variables = new { ownerId = id }
             };
 
-            var response = await _client.SendMutationAsync<ResponseOwnerType>(query);
-            return response.Data.Owner;
+            var response = await _client.SendMutationAsync<T>(query);
+            return response.Data;
         }
     }
 }
