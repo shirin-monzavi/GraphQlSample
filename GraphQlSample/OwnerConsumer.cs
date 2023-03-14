@@ -54,6 +54,12 @@ namespace GraphQlSample
 
             var response = await _client.SendMutationAsync<T>(query);
             return response.Data;
+            
+            lock(_client)
+            {
+
+            }
+           
         }
 
         public async Task<T> UpdateOwner<T>(Guid id, GraphQLQuery graphQLQuery)
